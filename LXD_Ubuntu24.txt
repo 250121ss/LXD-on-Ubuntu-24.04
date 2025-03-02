@@ -1,0 +1,92 @@
+**What is LXD?**
+
+LXD is a system container and virtual machine manager for Linux, designed to provide an easy-to-use experience for managing containers and VMs.
+It extends **LXC (Linux Containers)** by adding features like a REST API, image management, live migration, and enhanced security. 
+LXD is commonly used for lightweight virtualization, similar to Docker but focusing more on full system containers.
+
+---
+
+## **Step-by-Step Guide to Installing LXD on Ubuntu 24.04**
+
+### **1) Update Your System**
+```
+sudo apt update && sudo apt upgrade -y
+```
+
+### **2) Install Snap**
+```
+sudo apt install snap -y
+```
+
+### **3) Install LXD**
+```
+sudo snap install lxd
+lxd --version
+```
+
+### **4) Add Your Local User to LXD Group**
+```
+sudo usermod -aG lxd $USER
+newgrp lxd
+id
+lxc list
+```
+
+### **5) Initialize LXD**
+Run the following command:
+```
+lxd init
+```
+During the setup:
+- Choose **'no'** for clustering unless setting up a cluster.
+- Say **'yes'** to create a new storage pool.
+- Use **'dir'** backend for beginners.
+- Say **'yes'** to set up a network bridge.
+- Choose **'yes'** to make LXD available over the network.
+- Keep the default address.
+- Use port **8443** for LXD.
+
+Verify the setup with:
+```
+lxc profile list
+lxc network list
+lxc storage list
+```
+List all available images:
+```
+lxc image list images:
+```
+
+### **6) Allow LXD Network Bridge in Firewall**
+```
+sudo ufw allow in on lxdbr0
+sudo ufw route allow in on lxdbr0
+sudo ufw route allow out on lxdbr0
+sudo ufw reload
+```
+
+### **7) Create Your First Container**
+To create and launch an Ubuntu container, run:
+```
+lxc launch ubuntu:24.04 linux-container
+lxc list
+```
+
+### **8) Manage LXC Containers**
+To enter the container’s shell:
+```
+lxc exec linux-container -- bash
+```
+
+### **9) Access LXD Web UI**
+Allow the necessary port:
+```
+sudo ufw allow 8443/tcp
+sudo ufw reload
+```
+Now, open your web browser and go to:
+```
+https://<Your-Ubuntu-IP>:8443
+```
+
+---
